@@ -4,10 +4,10 @@ import TransactionController from '../controller/transaction/TransactionControll
 const transactionRouter = express.Router();
 
 transactionRouter.get('/', TransactionController.findAll);
-//app.post('/', controller.create);
-//app.get('/:id', controller.findOne);
-//app.put('/:id', controller.update);
-//app.delete('/:id', controller.remove);
+transactionRouter.post('/', TransactionController.create);
+transactionRouter.get('/:id', TransactionController.findOne);
+transactionRouter.put('/:id', TransactionController.update);
+transactionRouter.delete('/:id', TransactionController.remove);
 //app.delete('/grade/', controller.removeAll);
 
 export default transactionRouter;
