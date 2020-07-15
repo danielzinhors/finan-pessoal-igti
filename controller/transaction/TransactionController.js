@@ -11,12 +11,7 @@ const findAll = async (req, res) => {
         yearMonth: { $regex: new RegExp(yearMonth), $options: 'gi' },
       });
     } else {
-      res
-        .status(500)
-        .send(
-          'é necessario informar o parametro "/period" cujo o valor deve estar no formato yyyy-mm'
-        );
-      logger.info(`GET /api/transaction not foi informado o periodo`);
+      transaction = await Transaction.find();
     }
     if (transaction.length > 0) {
       res.send(transaction);

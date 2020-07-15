@@ -1,28 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import * as api from './api/apiService.js';
 import Spinner from './components/Spinner.js';
+import TransactionControl from './components/TransactionControl.js';
+import Select from './components/Select.js';
 
 export default function App() {
-  const [allTransactions, setallTransactions] = useState([]);
+  const [allTransactions, setAllTransactions] = useState([]);
+  const [Transactions, setTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [period, setPeridod] = useState('');
 
   useEffect(() => {
-    const getTransaction = async () => {
-      const transaction = await api.getAllTransactions();
+    const getTransactions = async () => {
+      const transaction = await api.getAllTransactions('');
       setTimeout(() => {
-        setallTransactions(transaction);
+        setAllTransactions(transaction);
       }, 2000);
     };
 
-    // api.getAllGrades().then((grades) => {
-    //   setTimeout(() => {
-    //     setAllGrades(grades);
-    //   }, 2000);
-    // });
+    getTransactions();
+  }, []);
+
+  useEffect(() => {
+    const getTransaction = async () => {
+      const transactions = await api.getAllTransactions(period);
+      setTimeout(() => {
+        setTransactions(transactions);
+      }, 2000);
+    };
 
     getTransaction();
-  }, []);
+  }, [period]);
+
+  const handleSelect = (newValue) => {
+    setPeridod(`?periodo=${newValue}`);
+  };
 
   const handleDelete = async (gradeToDelete) => {
     /*const isDeleted = await api.deleteGrade(gradeToDelete);
@@ -68,9 +81,22 @@ export default function App() {
   };
 
   return (
-    <div>
-      <h1 className="center">Desafio Final do Bootcamp Full Stack</h1>
-      {allTransactions.length > 0 && <Spinner />}
+    <div className="container">
+      <h4 className="center">
+        <b>Desafio Final do Bootcamp Full Stack</b>
+      </h4>
+      <h4 className="center">Controle Financeiro Pessoal</h4>
+      {allTransactions.length > 0 && (
+        <Select transactions={allTransactions} handleSelect={handleSelect} />
+      )}
+      {Transactions.length === 0 && <Spinner />}
+      {Transactions.length > 0 && (
+        <TransactionControl
+          transactions={Transactions}
+          onDelete={handleDelete}
+          onPersist={handlePersist}
+        />
+      )}
     </div>
   );
 }
