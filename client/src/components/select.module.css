@@ -1,0 +1,18 @@
+.divSelect {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+}
+
+.botao {
+  margin-left: 5px;
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.combo {
+  width: 150px;
+  font-family: 'Fira Code Retina', Consolas, monospace, Arial;
+}

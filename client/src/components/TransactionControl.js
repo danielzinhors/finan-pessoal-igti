@@ -1,5 +1,6 @@
 import React from 'react';
 import Transaction from './Transaction.js';
+import css from './transactionControl.module.css';
 
 export default function TransactionsControl({
   transactions,
@@ -15,7 +16,7 @@ export default function TransactionsControl({
   };
 
   return (
-    <div className="container">
+    <div className={`center ${css.div}`}>
       {transactions.map((transac) => {
         return (
           <Transaction
@@ -29,20 +30,3 @@ export default function TransactionsControl({
     </div>
   );
 }
-
-const styles = {
-  goodGrade: {
-    fontWeight: 'bold',
-    color: 'green',
-  },
-
-  badGrade: {
-    fontWeight: 'bold',
-    color: 'red',
-  },
-
-  table: {
-    margin: '20px',
-    padding: '10px',
-  },
-};

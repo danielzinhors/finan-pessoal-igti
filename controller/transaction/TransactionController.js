@@ -2,7 +2,7 @@ import logger from '../../config/Logger.js';
 import { db } from '../../database/db/db.js';
 
 const findAll = async (req, res) => {
-  const yearMonth = req.query.periodo; //
+  const yearMonth = req.query.period; //
   try {
     const Transaction = db.transaction;
     let transaction;
