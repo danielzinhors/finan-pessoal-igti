@@ -6,17 +6,7 @@ async function getAllTransactions(periodo) {
   const res = await axios.get(`${API_URL}${periodo}`);
 
   const transactions = res.data.map((transaction) => {
-    const {
-      description,
-      value,
-      category,
-      year,
-      month,
-      day,
-      yearMonth,
-      yearMonthDay,
-      type,
-    } = transaction;
+    const { description, category } = transaction;
 
     return {
       ...transaction,

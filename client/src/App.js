@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import * as api from './api/apiService.js';
-import Spinner from './components/Spinner.js';
-import TransactionControl from './components/TransactionControl.js';
-import Select from './components/Select.js';
+import React, { useState, useEffect, useRef } from 'react';
+import * as api from './api/apiService';
+import Spinner from './components/Spinner';
+import TransactionControl from './components/TransactionControl';
+import Select from './components/Select';
+import Sumario from './components/Sumario';
+import Busca from './components/Busca';
+import TransactionModal from './components/TransctionModal';
 
 export default function App() {
   const [allTransactions, setAllTransactions] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [period, setPeridod] = useState('');
-  const [valorSelect, setValorSelect] = useState('');
+  const [period, setPeriod] = useState('');
+  // const [valorSelect, setValorSelect] = useState('');
+  const [valorInput, setValorInput] = useState('');
+  const [yearMonth, setYearMonth] = useState('');
+  const latestValorInput = useRef(valorInput);
 
   function getDataAtual() {
     var dNow = new Date();
@@ -44,7 +50,6 @@ export default function App() {
         month = '09';
         break;
       default:
-        month = month;
         break;
     }
     var localdate = `${dNow.getFullYear()}-${month}`;
@@ -56,8 +61,9 @@ export default function App() {
       const transaction = await api.getAllTransactions('');
       setTimeout(() => {
         setAllTransactions(transaction);
-        setValorSelect(getDataAtual());
-        setPeridod(`?period=${valorSelect}`);
+        let data = getDataAtual();
+        setYearMonth(data);
+        setPeriod(`?period=${data}`);
       }, 2000);
     };
 
@@ -75,8 +81,26 @@ export default function App() {
     getTransaction();
   }, [period]);
 
+  useEffect(() => {
+    if (latestValorInput.current !== valorInput) {
+      latestValorInput.current = valorInput;
+      let trans;
+      if (valorInput != '') {
+        trans = transactions.filter((transac) => {
+          return transac.description.toLowerCase().includes(valorInput);
+        });
+      } else {
+        trans = allTransactions.filter((transac) => {
+          return transac.yearMonth == yearMonth;
+        });
+      }
+      setTransactions(trans);
+    }
+  }, [valorInput]);
+
   const handleSelect = (newValue) => {
-    setPeridod(`?period=${newValue}`);
+    setYearMonth(newValue);
+    setPeriod(`?period=${newValue}`);
   };
 
   const handleDelete = async (gradeToDelete) => {
@@ -95,9 +119,9 @@ export default function App() {
     }*/
   };
 
-  const handlePersist = (grade) => {
-    //setSelectedGrade(grade);
-    // setIsModalOpen(true);
+  const handlePersist = (transaction) => {
+    setSelectedTransaction(transaction);
+    setIsModalOpen(true);
   };
 
   const handlePersistData = async (formData) => {
@@ -122,8 +146,10 @@ export default function App() {
     //    setIsModalOpen(false);
   };
 
-  const handleButton = (sobe) => {
-    setValorSelect();
+  const handleButton = (sobe) => {};
+
+  const handleInput = (newValue) => {
+    setValorInput(newValue);
   };
 
   return (
@@ -134,18 +160,30 @@ export default function App() {
       <h4 className="center">Controle Financeiro Pessoal</h4>
       {allTransactions.length > 0 && (
         <Select
-          value={valorSelect}
+          //value={valorSelect}
           transactions={allTransactions}
           handleSelect={handleSelect}
           //  handleButton={handleSelect}
         />
       )}
       {transactions.length === 0 && <Spinner />}
+      {transactions.length > 0 && <Sumario transaction={transactions} />}
+      {transactions.length > 0 && (
+        <Busca value={valorInput} onChange={handleInput} />
+      )}
       {transactions.length > 0 && (
         <TransactionControl
           transactions={transactions}
           onDelete={handleDelete}
           onPersist={handlePersist}
+        />
+      )}
+
+      {isModalOpen && (
+        <TransactionModal
+          onSave={handlePersistData}
+          onClose={handleClose}
+          selectedTransaction={selectedTransaction}
         />
       )}
     </div>

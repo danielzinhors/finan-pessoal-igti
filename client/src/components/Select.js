@@ -37,7 +37,6 @@ export default function Select({ transactions, handleSelect, handleButton }) {
         month = '09';
         break;
       default:
-        month = month;
         break;
     }
     var localdate = `${dNow.getFullYear()}-${month}`;
@@ -103,6 +102,7 @@ export default function Select({ transactions, handleSelect, handleButton }) {
       });
       tableperiodoAux.push(transac.yearMonth);
     }
+    return tableperiodoAux;
   });
 
   const clickButton = (sobe) => {
@@ -132,7 +132,7 @@ export default function Select({ transactions, handleSelect, handleButton }) {
               <option
                 key={transaction.id}
                 selected
-                defaultValue={transaction.yearMonth}
+                value={transaction.yearMonth}
               >
                 {transaction.yearMonthBarra}
               </option>
