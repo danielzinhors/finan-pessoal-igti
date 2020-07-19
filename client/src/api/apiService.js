@@ -19,36 +19,24 @@ async function getAllTransactions(periodo) {
   return transactions;
 }
 
-/*async function insertGrade(grade) {
-  const response = await axios.post(API_URL, grade);
+async function insertTransaction(transaction) {
+  const response = await axios.post(API_URL, transaction);
   return response.data.id;
 }
 
-async function updateGrade(grade) {
-  const response = await axios.put(API_URL, grade);
+async function updateTransaction(transaction) {
+  const response = await axios.put(`${API_URL}/${transaction.id}`, transaction);
   return response.data;
 }
 
-async function deleteGrade(grade) {
-  const response = await axios.delete(`${API_URL}/${grade.id}`);
+async function deleteTransaction(transaction) {
+  const response = await axios.delete(`${API_URL}/${transaction.id}`);
   return response.data;
 }
 
-async function getValidationFromGradeType(gradeType) {
-  const gradeValidation = GRADE_VALIDATION.find(
-    (item) => item.gradeType === gradeType
-  );
-
-  const { minValue, maxValue } = gradeValidation;
-
-  return {
-    minValue,
-    maxValue,
-  };
-}*/
-
-export { getAllTransactions };
-// insertGrade,
-// updateGrade,
-// deleteGrade,
-// getValidationFromGradeType,
+export {
+  getAllTransactions,
+  insertTransaction,
+  updateTransaction,
+  deleteTransaction,
+};

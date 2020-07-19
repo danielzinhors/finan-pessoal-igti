@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import css from './select.module.css';
+import { useEffect } from 'react';
 
-export default function Select({ transactions, handleSelect, handleButton }) {
+export default function Select({ transactions, handleSelect }) {
+  const [valor, setValor] = useState('');
   const tableperiodo = [];
   const tableperiodoAux = [];
 
@@ -42,7 +44,11 @@ export default function Select({ transactions, handleSelect, handleButton }) {
     var localdate = `${dNow.getFullYear()}-${month}`;
     return localdate;
   }
-  const dataAtual = getDataAtual();
+
+  useEffect(() => {
+    const dataAtual = getDataAtual();
+    setValor(dataAtual);
+  }, []);
 
   const getComboItem = (month, year) => {
     let item;
@@ -107,9 +113,21 @@ export default function Select({ transactions, handleSelect, handleButton }) {
 
   const clickButton = (sobe) => {
     // handleButton(sobe);
+    /*if (dataAtual === transaction.yearMonth) {
+      return (
+        <option
+          key={transaction.id}
+          selected
+          value={transaction.yearMonth}
+        >
+          {transaction.yearMonthBarra}
+        </option>
+      );
+    } else {*/
   };
 
   const handleChange = (event) => {
+    setValor(event.target.value);
     handleSelect(event.target.value);
   };
 
@@ -123,27 +141,16 @@ export default function Select({ transactions, handleSelect, handleButton }) {
       </button>
       <select
         className={`browser-default ${css.combo}`}
+        value={valor}
         onChange={handleChange}
         onClick={clickButton(false)}
       >
         {tableperiodo.map((transaction) => {
-          if (dataAtual === transaction.yearMonth) {
-            return (
-              <option
-                key={transaction.id}
-                selected
-                value={transaction.yearMonth}
-              >
-                {transaction.yearMonthBarra}
-              </option>
-            );
-          } else {
-            return (
-              <option key={transaction.id} value={transaction.yearMonth}>
-                {transaction.yearMonthBarra}
-              </option>
-            );
-          }
+          return (
+            <option key={transaction.id} value={transaction.yearMonth}>
+              {transaction.yearMonthBarra}
+            </option>
+          );
         })}
       </select>
       <button

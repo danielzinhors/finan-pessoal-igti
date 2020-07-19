@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import * as api from '../api/apiService';
+import css from './transactionModal.module.css';
 
 Modal.setAppElement('#root');
 
@@ -34,34 +34,12 @@ export default function TransactionModal({
   const [transacYearMonthDay, setTransacYearMonthDay] = useState(yearMonthDay);
   const [errorMessage, setErrorMessage] = useState('');
 
-  /*useEffect(() => {
-    const getValidation = async () => {
-      const validation = await api.getValidationFromGradeType(type);
-      setGradeValidation(validation);
-    };
-
-    getValidation();
-  }, [type]);
-
-  useEffect(() => {
-    const { minValue, maxValue } = gradeValidation;
-
-    if (gradeValue < minValue || gradeValue > maxValue) {
-      setErrorMessage(
-        `O valor da nota deve ser entre ${minValue} e ${maxValue} (inclusive)`
-      );
-      return;
-    }
-
-    setErrorMessage('');
-  }, [gradeValue, gradeValidation]);
-
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  });*/
+  });
 
   const handleKeyDown = (event) => {
     if (event.key === 'Escape') {
@@ -96,11 +74,54 @@ export default function TransactionModal({
     setGradeValue(+event.target.value);
   };*/
 
+  const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+    },
+  };
+
+  const handleChangeType = (event) => {
+    console.log(event.target.value);
+    setTransacType(event.target.value);
+  };
+
+  const handleTransacDescription = (event) => {
+    setTransacDescription(event.target.value);
+  };
+
+  const handleTransacCategory = (event) => {
+    setTransacCategory(event.target.value);
+  };
+
+  const handleChangeValue = (event) => {
+    setTransacValue(+event.target.value);
+  };
+
+  const handleChangeDate = (event) => {
+    let data = event.target.value;
+    var dNow = new Date(data);
+    let month = dNow.getMonth() + 1;
+    let year = dNow.getFullYear();
+    let dia = dNow.getDate() + 1;
+    let monthComZero = ('00' + month).slice(-2); // "01"
+    let diaComZero = ('00' + dia).slice(-2);
+    setTransacYearMonthDay(`${year}-${monthComZero}-${diaComZero}`);
+    setTransacYearMonth(`${year}-${monthComZero}`);
+    setTransacYear(year);
+    setTransacDay(dia);
+    setTransacMonth(month);
+  };
+
   return (
-    <div>
-      <Modal isOpen={true}>
-        <div style={styles.flexRow}>
-          <span style={styles.title}>{titulo}</span>
+    <div className="col s4">
+      <Modal isOpen={true} style={customStyles}>
+        <div className={`${css.flexRow} col s6`}>
+          <span className={css.title}>{titulo}</span>
           <button
             className="waves-effect waves-lights btn red dark-4"
             onClick={handleModalClose}
@@ -109,88 +130,119 @@ export default function TransactionModal({
           </button>
         </div>
 
-        <form onSubmit={handleFormSubmit}>
-          <div>
-            <p>
-              <label>
-                <input name="group1" type="radio" checked />
-                <span>Receita</span>
-              </label>
-              <label>
-                <input name="group1" type="radio" />
-                <span>Despesa</span>
-              </label>
-            </p>
+        <form onSubmit={handleFormSubmit} className={css.modalBody}>
+          <div className="input-field col s6">
+            {transacType === '+' && (
+              <p>
+                <label>
+                  <input
+                    id="inputType"
+                    name="type"
+                    type="radio"
+                    value="+"
+                    checked
+                    onChange={handleChangeType}
+                  />
+                  <span htmlFor="inputType">Receita</span>
+                </label>
+                <label>
+                  <input
+                    id="inputType"
+                    name="type"
+                    type="radio"
+                    value="-"
+                    onChange={handleChangeType}
+                  />
+                  <span htmlFor="inputType">Despesa</span>
+                </label>
+              </p>
+            )}
+            {transacType === '-' && (
+              <p>
+                <label>
+                  <input
+                    id="inputType"
+                    name="type"
+                    type="radio"
+                    value="+"
+                    onChange={handleChangeType}
+                  />
+                  <span htmlFor="inputType">Receita</span>
+                </label>
+                <label>
+                  <input
+                    id="inputType"
+                    name="type"
+                    type="radio"
+                    value="-"
+                    checked
+                    onChange={handleChangeType}
+                  />
+                  <span htmlFor="inputType">Despesa</span>
+                </label>
+              </p>
+            )}
           </div>
-          <div className="input-field">
+          <div className="input-field col s6">
             <input
               id="inputDescription"
               type="text"
               value={transacDescription}
+              onChange={handleTransacDescription}
             />
             <label className="active" htmlFor="inputDescription">
               Descrição:
             </label>
           </div>
 
-          <div className="input-field">
-            <input id="inputCategory" type="text" value={transacCategory} />
+          <div className="input-field col s6">
+            <input
+              id="inputCategory"
+              type="text"
+              value={transacCategory}
+              onChange={handleTransacCategory}
+            />
             <label className="active" htmlFor="inputCategory">
               Categoria:
             </label>
           </div>
-          <div>
-            <div className="input-field">
-              <input id="inputValue" type="number" value={transacValue} />
+          <div className="row">
+            <div className="input-field col s6">
+              <input
+                id="inputValue"
+                type="number"
+                value={transacValue}
+                step="0.01"
+                onChange={handleChangeValue}
+              />
               <label className="active" htmlFor="inputValue">
                 Valor:
               </label>
             </div>
 
-            <div className="input-field">
+            <div className="input-field col s6">
               <input
                 id="inputYearMonthDay"
-                type="text"
-                className="datepicker"
+                type="date"
                 value={transacYearMonthDay}
+                onChange={handleChangeDate}
               />
               <label className="active" htmlFor="inputYearMonthDay">
                 Data:
               </label>
             </div>
           </div>
-
-          <div style={styles.flexRow}>
+          <div className={css.flexRow}>
             <button
               className="waves-effect waves-light btn"
               disabled={errorMessage.trim() !== ''}
             >
               Salvar
             </button>
-            <span style={styles.errorMessage}>{errorMessage}</span>
+            <span className={css.errorMessage}>{errorMessage}</span>
           </div>
         </form>
       </Modal>
     </div>
   );
 }
-
-const styles = {
-  flexRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: '40px',
-  },
-
-  title: {
-    fontSize: '1.3rem',
-    fontWeight: 'bold',
-  },
-
-  errorMessage: {
-    color: 'red',
-    fontWeight: 'bold',
-  },
-};

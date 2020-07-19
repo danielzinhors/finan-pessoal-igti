@@ -13,10 +13,10 @@ export default function App() {
   const [selectedTransaction, setSelectedTransaction] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [period, setPeriod] = useState('');
-  // const [valorSelect, setValorSelect] = useState('');
   const [valorInput, setValorInput] = useState('');
   const [yearMonth, setYearMonth] = useState('');
   const latestValorInput = useRef(valorInput);
+  const [tituloModal, setTituloModal] = useState('');
 
   function getDataAtual() {
     var dNow = new Date();
@@ -85,65 +85,88 @@ export default function App() {
     if (latestValorInput.current !== valorInput) {
       latestValorInput.current = valorInput;
       let trans;
-      if (valorInput != '') {
+      if (valorInput !== '') {
         trans = transactions.filter((transac) => {
           return transac.description.toLowerCase().includes(valorInput);
         });
       } else {
         trans = allTransactions.filter((transac) => {
-          return transac.yearMonth == yearMonth;
+          return transac.yearMonth === yearMonth;
         });
       }
       setTransactions(trans);
     }
-  }, [valorInput]);
+  }, [valorInput, allTransactions, yearMonth, transactions]);
 
   const handleSelect = (newValue) => {
     setYearMonth(newValue);
     setPeriod(`?period=${newValue}`);
   };
 
-  const handleDelete = async (gradeToDelete) => {
-    /*const isDeleted = await api.deleteGrade(gradeToDelete);
+  const handleDelete = async (transactionToDelete) => {
+    const isDeleted = await api.deleteTransaction(transactionToDelete);
 
     if (isDeleted) {
-      const deletedGradeIndex = allGrades.findIndex(
-        (grade) => grade.id === gradeToDelete.id
-      );
-
-      const newGrades = Object.assign([], allGrades);
-      newGrades[deletedGradeIndex].isDeleted = true;
-      newGrades[deletedGradeIndex].value = 0;
-
-      setAllGrades(newGrades);
-    }*/
+      const transaction = await api.getAllTransactions('');
+      setAllTransactions(transaction);
+      setYearMonth(transactionToDelete.yearMonth);
+      setPeriod(`?period=${transactionToDelete.yearMonth}`);
+    }
   };
 
   const handlePersist = (transaction) => {
     setSelectedTransaction(transaction);
+    setTituloModal('Editando Transação');
     setIsModalOpen(true);
   };
 
   const handlePersistData = async (formData) => {
-    /* const { id, newValue } = formData;
+    const {
+      id,
+      description,
+      category,
+      type,
+      value,
+      year,
+      day,
+      month,
+      yearMonth,
+      yearMonthDay,
+    } = formData;
 
-    const newGrades = Object.assign([], allGrades);
-
-    const gradeToPersist = newGrades.find((grade) => grade.id === id);
-    gradeToPersist.value = newValue;
-
-    if (gradeToPersist.isDeleted) {
-      gradeToPersist.isDeleted = false;
-      await api.insertGrade(gradeToPersist);
+    const transacToPersist = allTransactions.find(
+      (transac) => transac.id === id
+    );
+    transacToPersist.id = id;
+    transacToPersist.description = description;
+    transacToPersist.category = category;
+    transacToPersist.type = type;
+    transacToPersist.value = value;
+    transacToPersist.year = year;
+    transacToPersist.day = day;
+    transacToPersist.month = month;
+    transacToPersist.yearMonth = yearMonth;
+    transacToPersist.yearMonthDay = yearMonthDay;
+    console.log(transacToPersist);
+    if (transacToPersist.isDeleted) {
+      await api.insertTransaction(transacToPersist);
     } else {
-      await api.updateGrade(gradeToPersist);
+      await api.updateTransaction(transacToPersist);
     }
-
-    setIsModalOpen(false);*/
+    const transaction = await api.getAllTransactions('');
+    setAllTransactions(transaction);
+    setYearMonth(transacToPersist.yearMonth);
+    setPeriod(`?period=${transacToPersist.yearMonth}`);
+    setIsModalOpen(false);
   };
 
   const handleClose = () => {
-    //    setIsModalOpen(false);
+    setIsModalOpen(false);
+  };
+
+  const handleClickButtonAdd = () => {
+    setTituloModal('Adicionando Transação');
+    setIsModalOpen(true);
   };
 
   const handleButton = (sobe) => {};
@@ -158,19 +181,20 @@ export default function App() {
         <b>Desafio Final do Bootcamp Full Stack</b>
       </h4>
       <h4 className="center">Controle Financeiro Pessoal</h4>
-      {allTransactions.length > 0 && (
-        <Select
-          //value={valorSelect}
-          transactions={allTransactions}
-          handleSelect={handleSelect}
-          //  handleButton={handleSelect}
+      {allTransactions.length > 0 && !isModalOpen && (
+        <Select transactions={allTransactions} handleSelect={handleSelect} />
+      )}
+      {transactions.length > 0 && !isModalOpen && (
+        <Sumario transaction={transactions} />
+      )}
+      {allTransactions.length > 0 && !isModalOpen && (
+        <Busca
+          value={valorInput}
+          onChange={handleInput}
+          onClick={handleClickButtonAdd}
         />
       )}
       {transactions.length === 0 && <Spinner />}
-      {transactions.length > 0 && <Sumario transaction={transactions} />}
-      {transactions.length > 0 && (
-        <Busca value={valorInput} onChange={handleInput} />
-      )}
       {transactions.length > 0 && (
         <TransactionControl
           transactions={transactions}
@@ -181,6 +205,7 @@ export default function App() {
 
       {isModalOpen && (
         <TransactionModal
+          titulo={tituloModal}
           onSave={handlePersistData}
           onClose={handleClose}
           selectedTransaction={selectedTransaction}

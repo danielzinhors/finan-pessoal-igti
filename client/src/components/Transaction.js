@@ -1,6 +1,7 @@
 import React from 'react';
 import Action from './Action';
 import css from './transaction.module.css';
+import { formatCurrency } from '../helpers/formatHelpers.js';
 
 export default function Transaction({ transaction, onDelete, onUpdate }) {
   const handleActionClick = (type) => {
@@ -26,7 +27,7 @@ export default function Transaction({ transaction, onDelete, onUpdate }) {
           <span className={css.descricao}>{transaction.description}</span>
           <span className={css.descricao}>{transaction.yearMonth}</span>
         </div>
-        <span className={css.valor}>{transaction.value}</span>
+        <span className={css.valor}>{formatCurrency(transaction.value)}</span>
       </div>
       <div className={css.divActions}>
         <Action onActionClick={handleActionClick} type="edit" />

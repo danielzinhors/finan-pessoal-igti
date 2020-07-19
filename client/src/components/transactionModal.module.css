@@ -1,0 +1,42 @@
+.modal {
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background-color: lightgray;
+}
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.errorMessage {
+  color: red;
+  font-weight: bold;
+}
+
+.modalBody {
+  text-align: center;
+}
+.space {
+  padding-right: 10px;
+}
+
+.good {
+  color: green;
+}
+
+.badGrade {
+  color: red;
+}
