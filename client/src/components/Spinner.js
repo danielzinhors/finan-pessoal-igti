@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Spinner() {
+export default function Spinner({ titulo }) {
   return (
     <div style={styles.flexRow}>
       <div className="preloader-wrapper small active">
@@ -17,7 +17,9 @@ export default function Spinner() {
         </div>
       </div>
 
-      <span style={{ marginLeft: '10px', fontSize: '1.2rem' }}>Aguarde...</span>
+      <span style={{ marginLeft: '10px', fontSize: '1.2rem' }}>
+        Aguarde {titulo} ...
+      </span>
     </div>
   );
 }

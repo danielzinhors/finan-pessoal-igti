@@ -8,9 +8,9 @@ import Busca from './components/Busca';
 import TransactionModal from './components/TransctionModal';
 
 export default function App() {
-  const [allTransactions, setAllTransactions] = useState([]);
+  let [allTransactions, setAllTransactions] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [selectedTransaction, setSelectedTransaction] = useState({});
+  const [selectedTransaction, setSelectedTransaction] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [period, setPeriod] = useState('');
   const [valorInput, setValorInput] = useState('');
@@ -84,6 +84,7 @@ export default function App() {
   useEffect(() => {
     if (latestValorInput.current !== valorInput) {
       latestValorInput.current = valorInput;
+      console.log('input effect');
       let trans;
       if (valorInput !== '') {
         trans = transactions.filter((transac) => {
@@ -107,10 +108,13 @@ export default function App() {
     const isDeleted = await api.deleteTransaction(transactionToDelete);
 
     if (isDeleted) {
-      const transaction = await api.getAllTransactions('');
-      setAllTransactions(transaction);
+      const transc = await api.getAllTransactions('');
+      allTransactions = transc;
       setYearMonth(transactionToDelete.yearMonth);
-      setPeriod(`?period=${transactionToDelete.yearMonth}`);
+      let trans = allTransactions.filter((transac) => {
+        return transac.yearMonth === yearMonth;
+      });
+      setTransactions(trans);
     }
   };
 
@@ -133,34 +137,40 @@ export default function App() {
       yearMonth,
       yearMonthDay,
     } = formData;
-
-    const transacToPersist = allTransactions.find(
-      (transac) => transac.id === id
-    );
-    transacToPersist.id = id;
-    transacToPersist.description = description;
-    transacToPersist.category = category;
-    transacToPersist.type = type;
-    transacToPersist.value = value;
-    transacToPersist.year = year;
-    transacToPersist.day = day;
-    transacToPersist.month = month;
-    transacToPersist.yearMonth = yearMonth;
-    transacToPersist.yearMonthDay = yearMonthDay;
-    console.log(transacToPersist);
-    if (transacToPersist.isDeleted) {
+    let transacToPersist = allTransactions.find((transac) => transac.id === id);
+    if (transacToPersist !== undefined) {
+      transacToPersist.id = id;
+      transacToPersist.description = description;
+      transacToPersist.category = category;
+      transacToPersist.type = type;
+      transacToPersist.value = value;
+      transacToPersist.year = year;
+      transacToPersist.day = day;
+      transacToPersist.month = month;
+      transacToPersist.yearMonth = yearMonth;
+      transacToPersist.yearMonthDay = yearMonthDay;
+    } else {
+      transacToPersist = formData;
+      console.log(transacToPersist);
+    }
+    if (transacToPersist.id === undefined) {
       await api.insertTransaction(transacToPersist);
     } else {
       await api.updateTransaction(transacToPersist);
     }
-    const transaction = await api.getAllTransactions('');
-    setAllTransactions(transaction);
+    const transc = await api.getAllTransactions('');
+    allTransactions = transc;
     setYearMonth(transacToPersist.yearMonth);
-    setPeriod(`?period=${transacToPersist.yearMonth}`);
+    let trans = allTransactions.filter((transac) => {
+      return transac.yearMonth === yearMonth;
+    });
+    setTransactions(trans);
+    setSelectedTransaction({});
     setIsModalOpen(false);
   };
 
   const handleClose = () => {
+    setSelectedTransaction({});
     setIsModalOpen(false);
   };
 
@@ -181,6 +191,7 @@ export default function App() {
         <b>Desafio Final do Bootcamp Full Stack</b>
       </h4>
       <h4 className="center">Controle Financeiro Pessoal</h4>
+      {allTransactions.length === 0 && <Spinner titulo="Carregando períodos" />}
       {allTransactions.length > 0 && !isModalOpen && (
         <Select transactions={allTransactions} handleSelect={handleSelect} />
       )}
@@ -194,7 +205,9 @@ export default function App() {
           onClick={handleClickButtonAdd}
         />
       )}
-      {transactions.length === 0 && <Spinner />}
+      {transactions.length === 0 && allTransactions.length > 0 && (
+        <Spinner titulo="Carregando transações" />
+      )}
       {transactions.length > 0 && (
         <TransactionControl
           transactions={transactions}

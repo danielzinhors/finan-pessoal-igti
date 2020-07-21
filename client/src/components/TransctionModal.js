@@ -34,6 +34,91 @@ export default function TransactionModal({
   const [transacYearMonthDay, setTransacYearMonthDay] = useState(yearMonthDay);
   const [errorMessage, setErrorMessage] = useState('');
 
+  function getDataAtual() {
+    var dNow = new Date();
+    let month = dNow.getMonth() + 1;
+    switch (month) {
+      case 1:
+        month = '01';
+        break;
+      case 2:
+        month = '02';
+        break;
+      case 3:
+        month = '03';
+        break;
+      case 4:
+        month = '04';
+        break;
+      case 5:
+        month = '05';
+        break;
+      case 6:
+        month = '06';
+        break;
+      case 7:
+        month = '07';
+        break;
+      case 8:
+        month = '08';
+        break;
+      case 9:
+        month = '09';
+        break;
+      default:
+        break;
+    }
+    var localdate = `${dNow.getFullYear()}-${month}-${dNow.getDate()}`;
+    return localdate;
+  }
+
+  function getData(data) {
+    let mes = data.substr(5, 2);
+    switch (mes) {
+      case '01':
+        mes = 'Jan';
+        break;
+      case '02':
+        mes = 'Feb';
+        break;
+      case '03':
+        mes = 'Mar';
+        break;
+      case '04':
+        mes = 'Apr';
+        break;
+      case '05':
+        mes = 'May';
+        break;
+      case '06':
+        mes = 'June';
+        break;
+      case '07':
+        mes = 'July';
+        break;
+      case '08':
+        mes = 'Aug';
+        break;
+      case '09':
+        mes = 'Sept';
+        break;
+      case '10':
+        mes = 'Oct';
+        break;
+      case '11':
+        mes = 'Nov';
+        break;
+      case '12':
+        mes = 'Dec';
+        break;
+      default:
+        break;
+    } //Jan 1, 2000 00:00:00
+    let dia = data.substr(8, 2);
+    let ano = data.substring(0, 4);
+    let date = `${mes} ${dia}, ${ano} 00:00:00`;
+    return date;
+  }
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -62,17 +147,27 @@ export default function TransactionModal({
       yearMonth: transacYearMonth,
       yearMonthDay: transacYearMonthDay,
     };
-
-    onSave(formData);
+    if (formData.type === undefined) {
+      setErrorMessage('O tipo é obrigatório ser despesa ou receita!');
+    } else if (formData.description === undefined) {
+      setErrorMessage('A descrição é obrigatória!');
+    } else if (formData.category === undefined) {
+      setErrorMessage('A categoria é obrigatória!');
+    } else if (formData.value === undefined) {
+      setErrorMessage('O valor é obrigatório!');
+    } else if (formData.description === undefined) {
+      setErrorMessage('A descrição é obrigatória!');
+    } else if (formData.yearMonthDay === undefined) {
+      setErrorMessage('A data é obrigatória!');
+    } else {
+      console.log(formData);
+      onSave(formData);
+    }
   };
 
   const handleModalClose = () => {
     onClose(null);
   };
-
-  /* const handleGradeChange = (event) => {
-    setGradeValue(+event.target.value);
-  };*/
 
   const customStyles = {
     content: {
@@ -86,7 +181,6 @@ export default function TransactionModal({
   };
 
   const handleChangeType = (event) => {
-    console.log(event.target.value);
     setTransacType(event.target.value);
   };
 
@@ -104,13 +198,13 @@ export default function TransactionModal({
 
   const handleChangeDate = (event) => {
     let data = event.target.value;
-    var dNow = new Date(data);
+    var dNow = new Date(getData(data));
     let month = dNow.getMonth() + 1;
     let year = dNow.getFullYear();
-    let dia = dNow.getDate() + 1;
+    let dia = dNow.getDate();
     let monthComZero = ('00' + month).slice(-2); // "01"
-    let diaComZero = ('00' + dia).slice(-2);
-    setTransacYearMonthDay(`${year}-${monthComZero}-${diaComZero}`);
+    //let diaComZero = ('00' + dia).slice(-2);
+    setTransacYearMonthDay(data);
     setTransacYearMonth(`${year}-${monthComZero}`);
     setTransacYear(year);
     setTransacDay(dia);
@@ -132,6 +226,30 @@ export default function TransactionModal({
 
         <form onSubmit={handleFormSubmit} className={css.modalBody}>
           <div className="input-field col s6">
+            {transacType === undefined && (
+              <p>
+                <label>
+                  <input
+                    id="inputType"
+                    name="type"
+                    type="radio"
+                    value="+"
+                    onChange={handleChangeType}
+                  />
+                  <span htmlFor="inputType">Receita</span>
+                </label>
+                <label>
+                  <input
+                    id="inputType"
+                    name="type"
+                    type="radio"
+                    value="-"
+                    onChange={handleChangeType}
+                  />
+                  <span htmlFor="inputType">Despesa</span>
+                </label>
+              </p>
+            )}
             {transacType === '+' && (
               <p>
                 <label>
@@ -224,7 +342,11 @@ export default function TransactionModal({
               <input
                 id="inputYearMonthDay"
                 type="date"
-                value={transacYearMonthDay}
+                value={
+                  transacYearMonthDay !== undefined
+                    ? transacYearMonthDay
+                    : getDataAtual()
+                }
                 onChange={handleChangeDate}
               />
               <label className="active" htmlFor="inputYearMonthDay">
@@ -233,12 +355,7 @@ export default function TransactionModal({
             </div>
           </div>
           <div className={css.flexRow}>
-            <button
-              className="waves-effect waves-light btn"
-              disabled={errorMessage.trim() !== ''}
-            >
-              Salvar
-            </button>
+            <button className="waves-effect waves-light btn">Salvar</button>
             <span className={css.errorMessage}>{errorMessage}</span>
           </div>
         </form>
