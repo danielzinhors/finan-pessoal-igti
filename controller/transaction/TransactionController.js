@@ -123,14 +123,14 @@ const remove = async (req, res) => {
 
 /*const removeAll = async (_req, res) => {
   try {
-    const Grade = db.grade;
-    const deletou = await Grade.deleteMany({});
+    const Transaction = db.transaction;
+    const deletou = await Transaction.deleteMany({});
     if (deletou.deletedCount > 0) {
-      logger.info('Deleted All Grades!');
-      res.send('Deleted All Grades!');
+      logger.info('Deleted All transactions!');
+      res.send('Deleted All transactions!');
     } else {
-      logger.info('Not Deleted All Grades!');
-      res.send('Not Deleted All Grades!');
+      logger.info('Not Deleted All transactions!');
+      res.send('Not Deleted All transactions!');
     }
   } catch (error) {
     res.status(500).send({ message: 'Erro ao excluir todos as Grades' });

@@ -17,43 +17,20 @@ export default function App() {
   const [yearMonth, setYearMonth] = useState('');
   const latestValorInput = useRef(valorInput);
   const [tituloModal, setTituloModal] = useState('');
+  const [periodAtual, setPeriodAtual] = useState('');
 
   function getDataAtual() {
     var dNow = new Date();
     let month = dNow.getMonth() + 1;
-    switch (month) {
-      case 1:
-        month = '01';
-        break;
-      case 2:
-        month = '02';
-        break;
-      case 3:
-        month = '03';
-        break;
-      case 4:
-        month = '04';
-        break;
-      case 5:
-        month = '05';
-        break;
-      case 6:
-        month = '06';
-        break;
-      case 7:
-        month = '07';
-        break;
-      case 8:
-        month = '08';
-        break;
-      case 9:
-        month = '09';
-        break;
-      default:
-        break;
-    }
-    var localdate = `${dNow.getFullYear()}-${month}`;
+    var localdate = `${dNow.getFullYear()}-${('0' + month).slice(-2)}`;
     return localdate;
+  }
+
+  function getTransOrdenada(transc) {
+    const trans = transc.sort((a, b) => {
+      return a.day - b.day;
+    });
+    return trans;
   }
 
   useEffect(() => {
@@ -62,6 +39,7 @@ export default function App() {
       setTimeout(() => {
         setAllTransactions(transaction);
         let data = getDataAtual();
+        setPeriodAtual(data);
         setYearMonth(data);
         setPeriod(`?period=${data}`);
       }, 2000);
@@ -74,7 +52,7 @@ export default function App() {
     const getTransaction = async () => {
       const transac = await api.getAllTransactions(period);
       setTimeout(() => {
-        setTransactions(transac);
+        setTransactions(getTransOrdenada(transac));
       }, 2000);
     };
 
@@ -84,7 +62,6 @@ export default function App() {
   useEffect(() => {
     if (latestValorInput.current !== valorInput) {
       latestValorInput.current = valorInput;
-      console.log('input effect');
       let trans;
       if (valorInput !== '') {
         trans = transactions.filter((transac) => {
@@ -95,7 +72,7 @@ export default function App() {
           return transac.yearMonth === yearMonth;
         });
       }
-      setTransactions(trans);
+      setTransactions(getTransOrdenada(trans));
     }
   }, [valorInput, allTransactions, yearMonth, transactions]);
 
@@ -114,7 +91,7 @@ export default function App() {
       let trans = allTransactions.filter((transac) => {
         return transac.yearMonth === yearMonth;
       });
-      setTransactions(trans);
+      setTransactions(getTransOrdenada(trans));
     }
   };
 
@@ -151,7 +128,6 @@ export default function App() {
       transacToPersist.yearMonthDay = yearMonthDay;
     } else {
       transacToPersist = formData;
-      console.log(transacToPersist);
     }
     if (transacToPersist.id === undefined) {
       await api.insertTransaction(transacToPersist);
@@ -164,7 +140,7 @@ export default function App() {
     let trans = allTransactions.filter((transac) => {
       return transac.yearMonth === yearMonth;
     });
-    setTransactions(trans);
+    setTransactions(getTransOrdenada(trans));
     setSelectedTransaction({});
     setIsModalOpen(false);
   };
@@ -179,8 +155,6 @@ export default function App() {
     setIsModalOpen(true);
   };
 
-  const handleButton = (sobe) => {};
-
   const handleInput = (newValue) => {
     setValorInput(newValue);
   };
@@ -193,7 +167,12 @@ export default function App() {
       <h4 className="center">Controle Financeiro Pessoal</h4>
       {allTransactions.length === 0 && <Spinner titulo="Carregando períodos" />}
       {allTransactions.length > 0 && !isModalOpen && (
-        <Select transactions={allTransactions} handleSelect={handleSelect} />
+        <Select
+          transactions={allTransactions}
+          handleSelect={handleSelect}
+          periodAtual={periodAtual}
+          setTransc={setTransactions}
+        />
       )}
       {transactions.length > 0 && !isModalOpen && (
         <Sumario transaction={transactions} />
