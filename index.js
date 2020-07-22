@@ -6,6 +6,11 @@ import dotenv from 'dotenv';
 import logger from './config/Logger.js';
 import { db } from './database/db/db.js';
 import bodyParser from 'body-parser';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 //Faz a leitura do arquivo ".env" por padrão
 dotenv.config();
 const app = express();
@@ -15,7 +20,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //Vinculando o React ao app
 //let __dirname;
-//app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, 'client/build')));
 //Rota raiz
 app.get('/api/', (_, response) => {
   response.send({
