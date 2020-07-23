@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_URL = '/api/transaction';
 
 async function getAllTransactions(periodo) {
-  const res = await axios.get(`${API_URL}${periodo}`);
+  const res = await axios.get(`${API_URL}?period=${periodo}`);
 
   const transactions = res.data.map((transaction) => {
     const { description, category } = transaction;

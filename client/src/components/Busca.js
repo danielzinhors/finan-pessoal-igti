@@ -15,6 +15,7 @@ export default function Busca({ value, onChange, onClick }) {
       <button
         className="waves-effect waves-light btn"
         onClick={handleClickButton}
+        title="Botão para adicionar"
       >
         + Novo lançamento
       </button>
@@ -24,7 +25,11 @@ export default function Busca({ value, onChange, onClick }) {
           type="text"
           value={value}
           onChange={changeInput}
+          title="Filtro da descrição"
         />
+        <label className="active" htmlFor="inputYearMonthDay">
+          Filtra pela Descrição
+        </label>
       </div>
     </div>
   );

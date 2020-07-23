@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Action({ type, onActionClick }) {
+export default function Action({ type, onActionClick, titulo }) {
   const handleIconClick = () => {
     onActionClick(type);
   };
@@ -10,6 +10,7 @@ export default function Action({ type, onActionClick }) {
       className="material-icons"
       onClick={handleIconClick}
       style={{ cursor: 'pointer', fontSize: '1.2rem', marginRight: '10px' }}
+      title={titulo}
     >
       {type}
     </span>

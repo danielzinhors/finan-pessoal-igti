@@ -6,6 +6,7 @@ import Select from './components/Select';
 import Sumario from './components/Sumario';
 import Busca from './components/Busca';
 import TransactionModal from './components/TransctionModal';
+import css from './app.module.css';
 
 export default function App() {
   let [allTransactions, setAllTransactions] = useState([]);
@@ -18,6 +19,7 @@ export default function App() {
   const latestValorInput = useRef(valorInput);
   const [tituloModal, setTituloModal] = useState('');
   const [periodAtual, setPeriodAtual] = useState('');
+  const [encontrou, setEncontrou] = useState(true);
 
   function getDataAtual() {
     var dNow = new Date();
@@ -41,7 +43,7 @@ export default function App() {
         let data = getDataAtual();
         setPeriodAtual(data);
         setYearMonth(data);
-        setPeriod(`?period=${data}`);
+        setPeriod(data);
       }, 2000);
     };
 
@@ -52,11 +54,13 @@ export default function App() {
     const getTransaction = async () => {
       const transac = await api.getAllTransactions(period);
       setTimeout(() => {
+        console.log(period);
         setTransactions(getTransOrdenada(transac));
       }, 2000);
     };
-
-    getTransaction();
+    if (period !== '') {
+      getTransaction();
+    }
   }, [period]);
 
   useEffect(() => {
@@ -67,10 +71,16 @@ export default function App() {
         trans = transactions.filter((transac) => {
           return transac.description.toLowerCase().includes(valorInput);
         });
+        if (trans.length > 0) {
+          setEncontrou(true);
+        } else {
+          setEncontrou(false);
+        }
       } else {
         trans = allTransactions.filter((transac) => {
           return transac.yearMonth === yearMonth;
         });
+        setEncontrou(true);
       }
       setTransactions(getTransOrdenada(trans));
     }
@@ -78,7 +88,7 @@ export default function App() {
 
   const handleSelect = (newValue) => {
     setYearMonth(newValue);
-    setPeriod(`?period=${newValue}`);
+    setPeriod(newValue);
   };
 
   const handleDelete = async (transactionToDelete) => {
@@ -184,8 +194,15 @@ export default function App() {
           onClick={handleClickButtonAdd}
         />
       )}
-      {transactions.length === 0 && allTransactions.length > 0 && (
+      {transactions.length === 0 && allTransactions.length > 0 && encontrou && (
         <Spinner titulo="Carregando transações" />
+      )}
+      {!encontrou && (
+        <div className={css.divNaoEncontrou}>
+          <p>
+            Não foi localizado nenhuma transação com a descrição "{valorInput}"
+          </p>
+        </div>
       )}
       {transactions.length > 0 && (
         <TransactionControl

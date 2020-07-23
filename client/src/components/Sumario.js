@@ -45,23 +45,23 @@ export default function Sumario({ transaction }) {
 
   return (
     <div className={css.divPrincipal}>
-      <span>
+      <span title={`Total de transações ${totalLanc}`}>
         <strong>Lançamentos: </strong>
         {totalLanc}
       </span>
-      <span>
+      <span title={`Total de receitas ${formatCurrency(totalRec)}`}>
         <strong>
           Receitas:{' '}
           <span className={css.corPositivo}>{formatCurrency(totalRec)}</span>
         </strong>
       </span>
-      <span>
+      <span title={`Total de despesas ${formatCurrency(totalDesp)}`}>
         <strong>
           Despesas:{' '}
           <span className={css.corNegativo}>{formatCurrency(totalDesp)}</span>
         </strong>
       </span>
-      <span>
+      <span title={`Saldo ${formatCurrency(saldo)}`}>
         <strong>
           Saldo: <span className={classeSaldo}>{formatCurrency(saldo)}</span>
         </strong>

@@ -1,0 +1,13 @@
+.divNaoEncontrou {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 5px;
+  margin: 5px;
+  background-color: rgb(240, 161, 168);
+  font-size: 1em;
+  font-weight: bold;
+}
