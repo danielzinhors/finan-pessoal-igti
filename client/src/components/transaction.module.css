@@ -7,7 +7,7 @@
   border-radius: 4px;
   padding: 5px;
   margin: 5px;
-  background-color: rgb(116, 240, 209);
+  background-color: #2ecc71;
 }
 
 .divNegativa {
@@ -19,14 +19,20 @@
   border-radius: 4px;
   padding: 5px;
   margin: 5px;
-  background-color: rgb(240, 161, 168);
+  background-color: #c0392b;
 }
 
 .dia {
   margin-right: 20px;
   font-family: Consolas, monospace;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  border-radius: 50%;
+  border: 1px solid lightgray;
+  padding: 2px;
+  background-color: white;
+  height: 50px;
+  width: 50px;
 }
 
 .divDadosValue {

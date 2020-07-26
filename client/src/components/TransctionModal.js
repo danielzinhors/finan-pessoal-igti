@@ -219,6 +219,7 @@ export default function TransactionModal({
           <button
             className="waves-effect waves-lights btn red dark-4"
             onClick={handleModalClose}
+            title="Fechar"
           >
             X
           </button>
@@ -235,6 +236,7 @@ export default function TransactionModal({
                     type="radio"
                     value="+"
                     onChange={handleChangeType}
+                    title="Receita"
                   />
                   <span htmlFor="inputType">Receita</span>
                 </label>
@@ -245,6 +247,7 @@ export default function TransactionModal({
                     type="radio"
                     value="-"
                     onChange={handleChangeType}
+                    title="Despesa"
                   />
                   <span htmlFor="inputType">Despesa</span>
                 </label>
@@ -260,6 +263,7 @@ export default function TransactionModal({
                     value="+"
                     checked
                     onChange={handleChangeType}
+                    title="Receita"
                   />
                   <span htmlFor="inputType">Receita</span>
                 </label>
@@ -270,6 +274,7 @@ export default function TransactionModal({
                     type="radio"
                     value="-"
                     onChange={handleChangeType}
+                    title="Despesa"
                   />
                   <span htmlFor="inputType">Despesa</span>
                 </label>
@@ -284,6 +289,7 @@ export default function TransactionModal({
                     type="radio"
                     value="+"
                     onChange={handleChangeType}
+                    title="Receita"
                   />
                   <span htmlFor="inputType">Receita</span>
                 </label>
@@ -295,6 +301,7 @@ export default function TransactionModal({
                     value="-"
                     checked
                     onChange={handleChangeType}
+                    title="Despesa"
                   />
                   <span htmlFor="inputType">Despesa</span>
                 </label>
@@ -307,6 +314,7 @@ export default function TransactionModal({
               type="text"
               value={transacDescription}
               onChange={handleTransacDescription}
+              title="Descrição"
             />
             <label className="active" htmlFor="inputDescription">
               Descrição:
@@ -319,6 +327,7 @@ export default function TransactionModal({
               type="text"
               value={transacCategory}
               onChange={handleTransacCategory}
+              title="Categoria"
             />
             <label className="active" htmlFor="inputCategory">
               Categoria:
@@ -332,6 +341,7 @@ export default function TransactionModal({
                 value={transacValue}
                 step="0.01"
                 onChange={handleChangeValue}
+                title="Valor"
               />
               <label className="active" htmlFor="inputValue">
                 Valor:
@@ -348,6 +358,7 @@ export default function TransactionModal({
                     : getDataAtual()
                 }
                 onChange={handleChangeDate}
+                title="Data"
               />
               <label className="active" htmlFor="inputYearMonthDay">
                 Data:
@@ -355,7 +366,9 @@ export default function TransactionModal({
             </div>
           </div>
           <div className={css.flexRow}>
-            <button className="waves-effect waves-light btn">Salvar</button>
+            <button className="waves-effect waves-light btn" text="Salvar">
+              Salvar
+            </button>
             <span className={css.errorMessage}>{errorMessage}</span>
           </div>
         </form>

@@ -11,6 +11,7 @@ import css from './app.module.css';
 export default function App() {
   let [allTransactions, setAllTransactions] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [transactionsBusca, setTransactionsBusca] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [period, setPeriod] = useState('');
@@ -54,8 +55,8 @@ export default function App() {
     const getTransaction = async () => {
       const transac = await api.getAllTransactions(period);
       setTimeout(() => {
-        console.log(period);
         setTransactions(getTransOrdenada(transac));
+        setTransactionsBusca(getTransOrdenada(transac));
       }, 2000);
     };
     if (period !== '') {
@@ -68,8 +69,12 @@ export default function App() {
       latestValorInput.current = valorInput;
       let trans;
       if (valorInput !== '') {
-        trans = transactions.filter((transac) => {
-          return transac.description.toLowerCase().includes(valorInput);
+        trans = transactionsBusca.filter((transac) => {
+          let semAcento = transac.description
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase();
+          return semAcento.includes(valorInput.normalize('NFD').toLowerCase());
         });
         if (trans.length > 0) {
           setEncontrou(true);
@@ -77,14 +82,12 @@ export default function App() {
           setEncontrou(false);
         }
       } else {
-        trans = allTransactions.filter((transac) => {
-          return transac.yearMonth === yearMonth;
-        });
+        trans = transactionsBusca;
         setEncontrou(true);
       }
       setTransactions(getTransOrdenada(trans));
     }
-  }, [valorInput, allTransactions, yearMonth, transactions]);
+  }, [valorInput, allTransactions, yearMonth, transactions, transactionsBusca]);
 
   const handleSelect = (newValue) => {
     setYearMonth(newValue);
@@ -171,10 +174,21 @@ export default function App() {
 
   return (
     <div className="container">
-      <h4 className="center">
-        <b>Desafio Final do Bootcamp Full Stack</b>
-      </h4>
-      <h4 className="center">Controle Financeiro Pessoal</h4>
+      <div className={css.divTitulo}>
+        <img
+          className={css.logo}
+          src="https://imagepng.org/wp-content/uploads/2019/05/dinheiro-icone-3.png"
+          alt=""
+          height="150px"
+          width="150px"
+        />
+        <div className={css.titulo}>
+          <h4 className="center">
+            <b>Desafio Final do Bootcamp Full Stack</b>
+          </h4>
+          <h4 className="center">Controle Financeiro Pessoal</h4>
+        </div>
+      </div>
       {allTransactions.length === 0 && <Spinner titulo="Carregando períodos" />}
       {allTransactions.length > 0 && !isModalOpen && (
         <Select
