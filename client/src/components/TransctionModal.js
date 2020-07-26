@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import css from './transactionModal.module.css';
+import Spinner from './Spinner';
 
 Modal.setAppElement('#root');
 
@@ -9,6 +10,7 @@ export default function TransactionModal({
   onClose,
   selectedTransaction,
   titulo,
+  salvando,
 }) {
   const {
     id,
@@ -160,8 +162,7 @@ export default function TransactionModal({
     } else if (formData.yearMonthDay === undefined) {
       setErrorMessage('A data é obrigatória!');
     } else {
-      console.log(formData);
-      onSave(formData);
+      onSave(formData, true);
     }
   };
 
@@ -366,9 +367,14 @@ export default function TransactionModal({
             </div>
           </div>
           <div className={css.flexRow}>
-            <button className="waves-effect waves-light btn" text="Salvar">
+            <button
+              className="waves-effect waves-light btn"
+              text="Salvar"
+              disabled={salvando}
+            >
               Salvar
             </button>
+            {salvando && <Spinner titulo="salvando transação" />}
             <span className={css.errorMessage}>{errorMessage}</span>
           </div>
         </form>

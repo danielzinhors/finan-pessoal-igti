@@ -21,6 +21,7 @@ export default function App() {
   const [tituloModal, setTituloModal] = useState('');
   const [periodAtual, setPeriodAtual] = useState('');
   const [encontrou, setEncontrou] = useState(true);
+  const [salvando, setSalvando] = useState(false);
 
   function getDataAtual() {
     var dNow = new Date();
@@ -115,6 +116,7 @@ export default function App() {
   };
 
   const handlePersistData = async (formData) => {
+    setSalvando(true);
     const {
       id,
       description,
@@ -165,6 +167,7 @@ export default function App() {
 
   const handleClickButtonAdd = () => {
     setTituloModal('Adicionando Transação');
+    setSalvando(false);
     setIsModalOpen(true);
   };
 
@@ -232,6 +235,7 @@ export default function App() {
           onSave={handlePersistData}
           onClose={handleClose}
           selectedTransaction={selectedTransaction}
+          salvando={salvando}
         />
       )}
     </div>
