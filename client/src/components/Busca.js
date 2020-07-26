@@ -28,7 +28,7 @@ export default function Busca({ value, onChange, onClick }) {
           title="Filtro da descrição"
         />
         <label className="active" htmlFor="inputYearMonthDay">
-          Filtra pela Descrição
+          Filtrar pela Descrição
         </label>
       </div>
     </div>

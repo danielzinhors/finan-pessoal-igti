@@ -113,6 +113,7 @@ export default function Select({
         className={`waves-effect waves-light btn ${css.botao}`}
         disabled={firstButtonDisable}
         onClick={antPeriodo}
+        title="Período anterior"
       >
         &lt;
       </button>
@@ -120,6 +121,7 @@ export default function Select({
         className={`browser-default ${css.combo}`}
         value={valor}
         onChange={handleChange}
+        title="Período"
       >
         {tableperiodo.map((transaction) => {
           return (
@@ -133,6 +135,7 @@ export default function Select({
         className={`waves-effect waves-light btn ${css.botao}`}
         disabled={lastButtonDisable}
         onClick={proximoPeriodo}
+        title="Próximo período"
       >
         &gt;
       </button>
