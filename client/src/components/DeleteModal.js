@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react';
 import Modal from 'react-modal';
 import css from './transactionModal.module.css';
+import Spinner from './Spinner';
 
 Modal.setAppElement('#root');
 
-export default function DeleteModal({ onClose, onDelete, transaction }) {
+export default function DeleteModal({
+  onClose,
+  onDelete,
+  transaction,
+  salvando,
+}) {
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -13,8 +19,10 @@ export default function DeleteModal({ onClose, onDelete, transaction }) {
   });
 
   const handleKeyDown = (event) => {
-    if (event.key === 'Escape') {
-      onClose(null);
+    if (!salvando) {
+      if (event.key === 'Escape') {
+        onClose(null);
+      }
     }
   };
 
@@ -41,11 +49,19 @@ export default function DeleteModal({ onClose, onDelete, transaction }) {
     <div className="col s4">
       <Modal isOpen={true} style={customStyles}>
         <div className={`${css.flexRow} col s6`}>
-          <span>Pergunta</span>
+          <span title="Pergunta">Pergunta</span>
         </div>
         <div>
-          <p className={css.title}>Deseja realmente excluir a transação:</p>
-          <p className={css.title}>
+          <p
+            className={css.title}
+            title="Deseja realmente excluir a transação:"
+          >
+            Deseja realmente excluir a transação:
+          </p>
+          <p
+            className={css.title}
+            title={`${transaction.description} do dia ${transaction.day}?`}
+          >
             {transaction.description} do dia {transaction.day}?
           </p>
         </div>
@@ -53,16 +69,21 @@ export default function DeleteModal({ onClose, onDelete, transaction }) {
           <button
             className="waves-effect waves-light btn red dark-4"
             onClick={handleDelete}
+            title="Sim"
+            disabled={salvando}
           >
             Sim
           </button>
           <button
             className="waves-effect waves-lights btn"
             onClick={handleModalClose}
+            title="Nâo"
+            disabled={salvando}
           >
             Não
           </button>
         </div>
+        <div>{salvando && <Spinner titulo="excluindo transação" />}</div>
       </Modal>
     </div>
   );

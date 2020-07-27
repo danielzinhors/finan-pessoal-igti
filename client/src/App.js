@@ -100,6 +100,7 @@ export default function App() {
 
     if (isDeleted) {
       const transc = await api.getAllTransactions('');
+      setPeriodAtual(transactionToDelete.yearMonth);
       allTransactions = transc;
       setYearMonth(transactionToDelete.yearMonth);
       let trans = allTransactions.filter((transac) => {
@@ -150,6 +151,7 @@ export default function App() {
       await api.updateTransaction(transacToPersist);
     }
     const transc = await api.getAllTransactions('');
+    setPeriodAtual(transacToPersist.yearMonth);
     allTransactions = transc;
     setYearMonth(transacToPersist.yearMonth);
     let trans = allTransactions.filter((transac) => {
