@@ -12,30 +12,6 @@ export default function TransactionModal({
   titulo,
   salvando,
 }) {
-  const {
-    id,
-    description,
-    category,
-    type,
-    value,
-    year,
-    day,
-    month,
-    yearMonth,
-    yearMonthDay,
-  } = selectedTransaction;
-
-  const [transacDescription, setTransacDescription] = useState(description);
-  const [transacCategory, setTransacCategory] = useState(category);
-  const [transacType, setTransacType] = useState(type);
-  const [transacValue, setTransacValue] = useState(value);
-  const [transacYear, setTransacYear] = useState(year);
-  const [transacDay, setTransacDay] = useState(day);
-  const [transacMonth, setTransacMonth] = useState(month);
-  const [transacYearMonth, setTransacYearMonth] = useState(yearMonth);
-  const [transacYearMonthDay, setTransacYearMonthDay] = useState(yearMonthDay);
-  const [errorMessage, setErrorMessage] = useState('');
-
   function getDataAtual() {
     var dNow = new Date();
     let month = dNow.getMonth() + 1;
@@ -121,6 +97,70 @@ export default function TransactionModal({
     let date = `${mes} ${dia}, ${ano} 00:00:00`;
     return date;
   }
+
+  const getDia = (data) => {
+    let dNow = new Date(getData(data));
+    let dia = dNow.getDate();
+    return dia;
+  };
+
+  const getMes = (data) => {
+    let dNow = new Date(getData(data));
+    let month = dNow.getMonth() + 1;
+    return month;
+  };
+
+  const getAno = (data) => {
+    let dNow = new Date(getData(data));
+    let year = dNow.getFullYear();
+    return year;
+  };
+
+  const getMesComZero = (data) => {
+    let dNow = new Date(getData(data));
+    let month = dNow.getMonth() + 1;
+    let monthComZero = ('00' + month).slice(-2); // "01"
+    return monthComZero;
+  };
+
+  const {
+    id,
+    description,
+    category,
+    type,
+    value,
+    year,
+    day,
+    month,
+    yearMonth,
+    yearMonthDay,
+  } = selectedTransaction;
+
+  const [transacDescription, setTransacDescription] = useState(description);
+  const [transacCategory, setTransacCategory] = useState(category);
+  const [transacType, setTransacType] = useState(type);
+  const [transacValue, setTransacValue] = useState(value);
+  const [transacYear, setTransacYear] = useState(
+    year !== undefined ? year : getAno(getDataAtual())
+  );
+  const [transacDay, setTransacDay] = useState(
+    day !== undefined ? day : getDia(getDataAtual())
+  );
+  const [transacMonth, setTransacMonth] = useState(
+    month !== undefined ? month : getMes(getDataAtual())
+  );
+  const [transacYearMonth, setTransacYearMonth] = useState(
+    yearMonth !== undefined
+      ? yearMonth
+      : `${getAno(getDataAtual())}-${getMesComZero(getDataAtual())}`
+  );
+  const [transacYearMonthDay, setTransacYearMonthDay] = useState(
+    yearMonthDay !== undefined ? yearMonthDay : getDataAtual()
+  );
+  const [errorMessage, setErrorMessage] = useState('');
+  const positive = '+';
+  const negative = '-';
+
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -181,7 +221,11 @@ export default function TransactionModal({
     },
   };
 
-  const handleChangeType = (event) => {
+  const handleChangeTypePositive = (event) => {
+    setTransacType(event.target.value);
+  };
+
+  const handleChangeTypeNegative = (event) => {
     setTransacType(event.target.value);
   };
 
@@ -199,21 +243,15 @@ export default function TransactionModal({
 
   const handleChangeDate = (event) => {
     let data = event.target.value;
-    var dNow = new Date(getData(data));
-    let month = dNow.getMonth() + 1;
-    let year = dNow.getFullYear();
-    let dia = dNow.getDate();
-    let monthComZero = ('00' + month).slice(-2); // "01"
-    //let diaComZero = ('00' + dia).slice(-2);
     setTransacYearMonthDay(data);
-    setTransacYearMonth(`${year}-${monthComZero}`);
-    setTransacYear(year);
-    setTransacDay(dia);
-    setTransacMonth(month);
+    setTransacYearMonth(`${getAno(data)}-${getMesComZero(data)}`);
+    setTransacYear(getAno(data));
+    setTransacDay(getDia(data));
+    setTransacMonth(getMes(data));
   };
 
   return (
-    <div className="col s4">
+    <div className="col s6">
       <Modal isOpen={true} style={customStyles}>
         <div className={`${css.flexRow} col s6`}>
           <span className={css.title}>{titulo}</span>
@@ -221,6 +259,7 @@ export default function TransactionModal({
             className="waves-effect waves-lights btn red dark-4"
             onClick={handleModalClose}
             title="Fechar"
+            disabled={salvando}
           >
             X
           </button>
@@ -228,86 +267,30 @@ export default function TransactionModal({
 
         <form onSubmit={handleFormSubmit} className={css.modalBody}>
           <div className="input-field col s6">
-            {transacType === undefined && (
-              <p>
-                <label>
-                  <input
-                    id="inputType"
-                    name="type"
-                    type="radio"
-                    value="+"
-                    onChange={handleChangeType}
-                    title="Receita"
-                  />
-                  <span htmlFor="inputType">Receita</span>
-                </label>
-                <label>
-                  <input
-                    id="inputType"
-                    name="type"
-                    type="radio"
-                    value="-"
-                    onChange={handleChangeType}
-                    title="Despesa"
-                  />
-                  <span htmlFor="inputType">Despesa</span>
-                </label>
-              </p>
-            )}
-            {transacType === '+' && (
-              <p>
-                <label>
-                  <input
-                    id="inputType"
-                    name="type"
-                    type="radio"
-                    value="+"
-                    checked
-                    onChange={handleChangeType}
-                    title="Receita"
-                  />
-                  <span htmlFor="inputType">Receita</span>
-                </label>
-                <label>
-                  <input
-                    id="inputType"
-                    name="type"
-                    type="radio"
-                    value="-"
-                    onChange={handleChangeType}
-                    title="Despesa"
-                  />
-                  <span htmlFor="inputType">Despesa</span>
-                </label>
-              </p>
-            )}
-            {transacType === '-' && (
-              <p>
-                <label>
-                  <input
-                    id="inputType"
-                    name="type"
-                    type="radio"
-                    value="+"
-                    onChange={handleChangeType}
-                    title="Receita"
-                  />
-                  <span htmlFor="inputType">Receita</span>
-                </label>
-                <label>
-                  <input
-                    id="inputType"
-                    name="type"
-                    type="radio"
-                    value="-"
-                    checked
-                    onChange={handleChangeType}
-                    title="Despesa"
-                  />
-                  <span htmlFor="inputType">Despesa</span>
-                </label>
-              </p>
-            )}
+            <p>
+              <label>
+                <input
+                  id="inputTypePositive"
+                  type="radio"
+                  value={positive}
+                  onChange={handleChangeTypePositive}
+                  title="Receita"
+                  checked={transacType === '+'}
+                />
+                <span htmlFor="inputTypePositive">Receita</span>
+              </label>
+              <label>
+                <input
+                  id="inputTypeNegative"
+                  type="radio"
+                  value={negative}
+                  checked={transacType === '-'}
+                  onChange={handleChangeTypeNegative}
+                  title="Despesa"
+                />
+                <span htmlFor="inputTypeNegative">Despesa</span>
+              </label>
+            </p>
           </div>
           <div className="input-field col s6">
             <input
@@ -353,11 +336,7 @@ export default function TransactionModal({
               <input
                 id="inputYearMonthDay"
                 type="date"
-                value={
-                  transacYearMonthDay !== undefined
-                    ? transacYearMonthDay
-                    : getDataAtual()
-                }
+                value={transacYearMonthDay}
                 onChange={handleChangeDate}
                 title="Data"
               />
