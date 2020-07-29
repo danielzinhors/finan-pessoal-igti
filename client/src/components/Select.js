@@ -117,20 +117,23 @@ export default function Select({
       >
         &lt;
       </button>
-      <select
-        className={`browser-default ${css.combo}`}
-        value={valor}
-        onChange={handleChange}
-        title="Período"
-      >
-        {tableperiodo.map((transaction) => {
-          return (
-            <option key={transaction.id} value={transaction.yearMonth}>
-              {transaction.yearMonthBarra}
-            </option>
-          );
-        })}
-      </select>
+      <div>
+        <label>Período</label>
+        <select
+          className={`browser-default ${css.combo}`}
+          value={valor}
+          onChange={handleChange}
+          title="Período"
+        >
+          {tableperiodo.map((transaction) => {
+            return (
+              <option key={transaction.id} value={transaction.yearMonth}>
+                {transaction.yearMonthBarra}
+              </option>
+            );
+          })}
+        </select>
+      </div>
       <button
         className={`waves-effect waves-light btn ${css.botao}`}
         disabled={lastButtonDisable}

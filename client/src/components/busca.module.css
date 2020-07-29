@@ -11,3 +11,19 @@
   display: flex;
   flex: 1 1 0%;
 }
+
+.divSelect {
+  display: flex;
+}
+
+.combo {
+  width: 150px;
+  font-family: 'Fira Code Retina', Consolas, monospace, Arial;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.labelSelect {
+  margin-left: 10px;
+  margin-top: -5px;
+}

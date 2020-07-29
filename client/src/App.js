@@ -22,6 +22,8 @@ export default function App() {
   const [periodAtual, setPeriodAtual] = useState('');
   const [encontrou, setEncontrou] = useState(true);
   const [salvando, setSalvando] = useState(false);
+  const [localPesquisa, setlocalPesquisa] = useState('descricao');
+  const latestLocal = useRef(localPesquisa);
 
   function getDataAtual() {
     var dNow = new Date();
@@ -66,17 +68,43 @@ export default function App() {
   }, [period]);
 
   useEffect(() => {
-    if (latestValorInput.current !== valorInput) {
+    if (
+      latestValorInput.current !== valorInput ||
+      latestLocal.current !== localPesquisa
+    ) {
       latestValorInput.current = valorInput;
+      latestLocal.current = localPesquisa;
       let trans;
       if (valorInput !== '') {
-        trans = transactionsBusca.filter((transac) => {
-          let semAcento = transac.description
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase();
-          return semAcento.includes(valorInput.normalize('NFD').toLowerCase());
-        });
+        switch (localPesquisa) {
+          case 'categoria':
+            trans = transactionsBusca.filter((transac) => {
+              let semAcento = transac.category
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+              return semAcento.includes(
+                valorInput.normalize('NFD').toLowerCase()
+              );
+            });
+            break;
+          case 'dia':
+            trans = transactionsBusca.filter((transac) => {
+              return transac.day === parseInt(valorInput);
+            });
+            break;
+          default:
+            trans = transactionsBusca.filter((transac) => {
+              let semAcento = transac.description
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+              return semAcento.includes(
+                valorInput.normalize('NFD').toLowerCase()
+              );
+            });
+            break;
+        }
         if (trans.length > 0) {
           setEncontrou(true);
         } else {
@@ -88,7 +116,14 @@ export default function App() {
       }
       setTransactions(getTransOrdenada(trans));
     }
-  }, [valorInput, allTransactions, yearMonth, transactions, transactionsBusca]);
+  }, [
+    valorInput,
+    allTransactions,
+    yearMonth,
+    transactions,
+    transactionsBusca,
+    localPesquisa,
+  ]);
 
   const handleSelect = (newValue) => {
     setYearMonth(newValue);
@@ -179,6 +214,10 @@ export default function App() {
     setValorInput(newValue);
   };
 
+  const handleLocalPesquisa = (newValue) => {
+    setlocalPesquisa(newValue);
+  };
+
   return (
     <div className="container">
       <div className={css.divTitulo}>
@@ -213,6 +252,8 @@ export default function App() {
           value={valorInput}
           onChange={handleInput}
           onClick={handleClickButtonAdd}
+          localPesquisa={localPesquisa}
+          handlePesquisa={handleLocalPesquisa}
         />
       )}
       {transactions.length === 0 && allTransactions.length > 0 && encontrou && (
