@@ -160,11 +160,13 @@ export default function App() {
     setTransactions(getTransOrdenada(trans));
     setSelectedTransaction({});
     setIsModalOpen(false);
+    setSalvando(false);
   };
 
   const handleClose = () => {
     setSelectedTransaction({});
     setIsModalOpen(false);
+    setSalvando(false);
   };
 
   const handleClickButtonAdd = () => {

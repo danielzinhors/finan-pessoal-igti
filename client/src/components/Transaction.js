@@ -6,7 +6,7 @@ import DeleteModal from './DeleteModal';
 
 export default function Transaction({ transaction, onDelete, onUpdate }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [salvando, setSalvando] = useState(false);
+  const [deletando, setDeletando] = useState(false);
 
   const handleActionClick = (type) => {
     if (type === 'delete') {
@@ -17,7 +17,7 @@ export default function Transaction({ transaction, onDelete, onUpdate }) {
   };
 
   const handleDelete = async () => {
-    setSalvando(true);
+    setDeletando(true);
     let deletou = await onDelete(transaction);
     if (deletou) {
       setIsModalOpen(false);
@@ -26,7 +26,7 @@ export default function Transaction({ transaction, onDelete, onUpdate }) {
 
   const handleClose = () => {
     transaction = [];
-    setSalvando(false);
+    setDeletando(false);
     setIsModalOpen(false);
   };
 
@@ -118,7 +118,7 @@ export default function Transaction({ transaction, onDelete, onUpdate }) {
           onClose={handleClose}
           onDelete={handleDelete}
           transaction={transaction}
-          salvando={salvando}
+          deletando={deletando}
         />
       )}
     </div>

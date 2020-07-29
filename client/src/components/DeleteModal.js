@@ -9,7 +9,7 @@ export default function DeleteModal({
   onClose,
   onDelete,
   transaction,
-  salvando,
+  deletando,
 }) {
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -19,7 +19,7 @@ export default function DeleteModal({
   });
 
   const handleKeyDown = (event) => {
-    if (!salvando) {
+    if (!deletando) {
       if (event.key === 'Escape') {
         onClose(null);
       }
@@ -70,7 +70,7 @@ export default function DeleteModal({
             className="waves-effect waves-light btn red dark-4"
             onClick={handleDelete}
             title="Sim"
-            disabled={salvando}
+            disabled={deletando}
           >
             Sim
           </button>
@@ -78,12 +78,12 @@ export default function DeleteModal({
             className="waves-effect waves-lights btn"
             onClick={handleModalClose}
             title="Nâo"
-            disabled={salvando}
+            disabled={deletando}
           >
             Não
           </button>
         </div>
-        <div>{salvando && <Spinner titulo="excluindo transação" />}</div>
+        <div>{deletando && <Spinner titulo="excluindo transação" />}</div>
       </Modal>
     </div>
   );
