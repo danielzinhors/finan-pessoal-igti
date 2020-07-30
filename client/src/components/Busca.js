@@ -29,7 +29,10 @@ export default function Busca({
       >
         + Novo lançamento
       </button>
-      <div className={`input-field ${css.divSelect}`}>
+      <div>
+        <label className={`input-field ${css.labelSelect}`}>
+          Local da busca
+        </label>
         <select
           id="selectLocal"
           className={`browser-default ${css.combo}`}
@@ -47,9 +50,6 @@ export default function Busca({
             Dia
           </option>
         </select>
-        <label className={`active ${css.labelSelect}`} htmlFor="selectLocal">
-          Local da busca
-        </label>
       </div>
       {localPesquisa !== 'dia' && (
         <div className={`input-field ${css.divInput}`}>
