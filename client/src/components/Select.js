@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import css from './select.module.css';
+import { getMesAno } from '../helpers/DataHelper';
 
 export default function Select({
   transactions,
@@ -13,53 +14,6 @@ export default function Select({
   const tableperiodo = [];
   const tableperiodoAux = [];
 
-  const getComboItem = (month, year) => {
-    let item;
-    switch (month) {
-      case 1:
-        item = 'Jan';
-        break;
-      case 2:
-        item = 'Fev';
-        break;
-      case 3:
-        item = 'Mar';
-        break;
-      case 4:
-        item = 'Abr';
-        break;
-      case 5:
-        item = 'Mai';
-        break;
-      case 6:
-        item = 'Jun';
-        break;
-      case 7:
-        item = 'Jul';
-        break;
-      case 8:
-        item = 'Ago';
-        break;
-      case 9:
-        item = 'Set';
-        break;
-      case 10:
-        item = 'Out';
-        break;
-      case 11:
-        item = 'Nov';
-        break;
-      case 12:
-        item = 'Dez';
-        break;
-      default:
-        item = 'Erro';
-        break;
-    }
-    item = `${item}/${year}`;
-    return item;
-  };
-
   useEffect(() => {
     setValor(periodAtual);
   }, [periodAtual]);
@@ -67,7 +21,7 @@ export default function Select({
   transactions.map((transac) => {
     if (tableperiodoAux.indexOf(transac.yearMonth) === -1) {
       let yearMonthBarra = transac.yearMonth;
-      yearMonthBarra = getComboItem(transac.month, transac.year);
+      yearMonthBarra = getMesAno(transac.month, transac.year);
       tableperiodo.push({
         id: transac.id,
         yearMonth: transac.yearMonth,

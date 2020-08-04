@@ -27,6 +27,7 @@
   flex-flow: column;
   align-items: center;
   justify-content: center;
+  color: black;
 }
 
 .logo {
@@ -35,4 +36,19 @@
   padding: 1px;
   margin-right: 45px;
   background-color: white;
+}
+
+.divContainer {
+  margin-top: 50px;
+}
+
+.combo {
+  width: 150px;
+  font-family: 'Fira Code Retina', Consolas, monospace, Arial;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
+
+.nav {
 }

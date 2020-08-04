@@ -16,17 +16,19 @@ export default function TransactionsControl({
   };
 
   return (
-    <div className={`center ${css.div}`}>
-      {transactions.map((transac) => {
-        return (
-          <Transaction
-            key={transac.id}
-            transaction={transac}
-            onDelete={isDelete}
-            onUpdate={isPersist}
-          />
-        );
-      })}
-    </div>
+    <>
+      <div className={`center col s12 ${css.div}`}>
+        {transactions.map((transac) => {
+          return (
+            <Transaction
+              key={transac.id}
+              transaction={transac}
+              onDelete={isDelete}
+              onUpdate={isPersist}
+            />
+          );
+        })}
+      </div>
+    </>
   );
 }
